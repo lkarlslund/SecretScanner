@@ -26,10 +26,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/deepfence/SecretScanner/core"
-	"github.com/deepfence/SecretScanner/output"
-	"github.com/deepfence/SecretScanner/signature"
+
 	"github.com/fatih/color"
+	"github.com/lkarlslund/SecretScanner/core"
+	"github.com/lkarlslund/SecretScanner/output"
+	"github.com/lkarlslund/SecretScanner/signature"
 )
 
 // Read the regex signatures from config file, options etc.

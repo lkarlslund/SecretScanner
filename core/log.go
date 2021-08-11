@@ -3,8 +3,9 @@ package core
 import (
 	"fmt"
 	"regexp"
+	"strings"
 	"sync"
-        "strings"
+
 	"github.com/fatih/color"
 )
 
@@ -34,7 +35,7 @@ type Logger struct {
 
 func (l *Logger) SetDebugLevel(d string) {
 	l.debugLevel = ERROR
-	
+
 	if strings.EqualFold(d, "FATAL") {
 		l.debugLevel = FATAL
 	} else if strings.EqualFold(d, "ERROR") {
@@ -47,7 +48,7 @@ func (l *Logger) SetDebugLevel(d string) {
 		l.debugLevel = INFO
 	} else if strings.EqualFold(d, "DEBUG") {
 		l.debugLevel = DEBUG
-	} 
+	}
 }
 
 func (l *Logger) Log(level int, format string, args ...interface{}) {

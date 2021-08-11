@@ -6,9 +6,10 @@ import (
 	"io/ioutil"
 	"os"
 	"time"
+
 	// "strings"
 	"github.com/fatih/color"
-	"github.com/deepfence/SecretScanner/core"
+	"github.com/lkarlslund/SecretScanner/core"
 )
 
 const (

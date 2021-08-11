@@ -22,5 +22,12 @@ jobs:
       run: sudo apt-get install mingw-w64 pkg-config libhyperscan-dev
 
     - name: Build
-      run: go build -v ./...
+      run: ./build.sh
 
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: Binaries
+        path: |
+          SecretScanner-*
+          config.yaml

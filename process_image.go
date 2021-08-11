@@ -4,9 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/deepfence/SecretScanner/core"
-	"github.com/deepfence/SecretScanner/output"
-	"github.com/deepfence/SecretScanner/signature"
 	"io/ioutil"
 	"log"
 	"os"
@@ -15,6 +12,10 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+
+	"github.com/lkarlslund/SecretScanner/core"
+	"github.com/lkarlslund/SecretScanner/output"
+	"github.com/lkarlslund/SecretScanner/signature"
 )
 
 // Data type to store details about the container image after parsing manifest
@@ -26,13 +27,13 @@ type manifestItem struct {
 }
 
 var (
-	imageTarFileName       = "save-output.tar"
+	imageTarFileName = "save-output.tar"
 )
 
 type ImageScan struct {
 	imageName     string
 	imageId       string
-	tempDir     string
+	tempDir       string
 	imageManifest manifestItem
 	numSecrets    uint
 }
@@ -42,7 +43,7 @@ type ImageScan struct {
 // imageScan - Structure with details of the container image to scan
 // @returns
 // Error - Errors, if any. Otherwise, returns nil
-func (imageScan *ImageScan) extractImage() (error) {
+func (imageScan *ImageScan) extractImage() error {
 	imageName := imageScan.imageName
 	tempDir := imageScan.tempDir
 	imageScan.numSecrets = 0
@@ -61,8 +62,8 @@ func (imageScan *ImageScan) extractImage() (error) {
 
 	imageManifest, err := extractDetailsFromManifest(tempDir)
 	if err != nil {
-		core.GetSession().Log.Error("ProcessImageLayers: Could not get image's history: %s," +
-						" please specify repo:tag and check disk space \n", err.Error())
+		core.GetSession().Log.Error("ProcessImageLayers: Could not get image's history: %s,"+
+			" please specify repo:tag and check disk space \n", err.Error())
 		return err
 	}
 
@@ -102,7 +103,7 @@ func (imageScan *ImageScan) scan() ([]output.SecretFound, error) {
 // []output.SecretFound - List of all secrets found
 // Error - Errors if any. Otherwise, returns nil
 func scanSecretsInDir(layer string, baseDir string, fullDir string, isFirstSecret *bool,
-								numSecrets *uint) ([]output.SecretFound, error) {
+	numSecrets *uint) ([]output.SecretFound, error) {
 	var tempSecretsFound []output.SecretFound
 
 	if layer != "" {
@@ -115,7 +116,7 @@ func scanSecretsInDir(layer string, baseDir string, fullDir string, isFirstSecre
 		relPath, err := filepath.Rel(path.Join(baseDir, layer), file.Path)
 		if err != nil {
 			core.GetSession().Log.Warn("scanSecretsInDir: Couldn't remove prefix of path: %s %s %s",
-											baseDir, layer, file.Path)
+				baseDir, layer, file.Path)
 			relPath = file.Path
 		}
 
@@ -131,8 +132,8 @@ func scanSecretsInDir(layer string, baseDir string, fullDir string, isFirstSecre
 			if err != nil {
 				core.GetSession().Log.Error("scanSecretsInDir changine file permission: %s", err)
 			}
-		}		
-						
+		}
+
 		contents, err := ioutil.ReadFile(file.Path)
 		if err != nil {
 			core.GetSession().Log.Error("scanSecretsInDir reading file: %s", err)
@@ -140,10 +141,10 @@ func scanSecretsInDir(layer string, baseDir string, fullDir string, isFirstSecre
 		} else {
 			// fmt.Println(relPath, file.Filename, file.Extension, layer)
 			secrets, err := signature.MatchPatternSignatures(contents, relPath, file.Filename, file.Extension,
-													layer, numSecrets)
+				layer, numSecrets)
 			if err != nil {
 				core.GetSession().Log.Info("relPath: %s, Filename: %s, Extension: %s, layer: %s",
-										relPath, file.Filename, file.Extension, layer)
+					relPath, file.Filename, file.Extension, layer)
 				core.GetSession().Log.Error("scanSecretsInDir: %s", err)
 				// return tempSecretsFound, err
 			}
@@ -194,8 +195,8 @@ func (imageScan *ImageScan) processImageLayers(imageManifestPath string) ([]outp
 		core.GetSession().Log.Info("Extracted to directory: %s", targetDir)
 		err = core.CreateRecursiveDir(targetDir)
 		if err != nil {
-			core.GetSession().Log.Error("ProcessImageLayers: Unable to create target directory" +
-										" to extract image layers... %s", err)
+			core.GetSession().Log.Error("ProcessImageLayers: Unable to create target directory"+
+				" to extract image layers... %s", err)
 			return tempSecretsFound, err
 		}
 
@@ -223,7 +224,7 @@ func (imageScan *ImageScan) processImageLayers(imageManifestPath string) ([]outp
 }
 
 // Save container image as tar file in specified directory
-// @parameters 
+// @parameters
 // imageScan - Structure with details of the container image to scan
 // @returns
 // Error - Errors if any. Otherwise, returns nil
@@ -243,7 +244,7 @@ func (imageScan *ImageScan) saveImageData() error {
 // Extract the contents of container image and save it in specified dir
 // @parameters
 // imageName - Name of the container image to save
-// imageTarPath - Complete path where tarball of the image is stored 
+// imageTarPath - Complete path where tarball of the image is stored
 // extractPath - Complete path of directory where contents of image are to be extracted
 // @returns
 // string - directory where contents of image are extracted
